@@ -1550,14 +1550,12 @@ public:
     LinkedListBST() : root(nullptr) {}
 
     void generate(int n) {
-        srand(time(0));
-        cout << "Generated values: ";
+        cout << "Enter " << n << " values: ";
         for (int i = 0; i < n; ++i) {
-            int val = rand() % 100 + 1;
-            cout << val << " ";
+            int val;
+            cin >> val;
             insert(root, val);
         }
-        cout << endl;
     }
 
     void postOrder(Node* node) {
@@ -1655,14 +1653,12 @@ public:
     }
 
     void generate(int n) {
-        srand(time(0));
-        cout << "Generated values: ";
+        cout << "Enter " << n << " values: ";
         for (int i = 0; i < n; ++i) {
-            int val = rand() % 100 + 1;
-            cout << val << " ";
-            insert(val);
+            int val;
+            cin >> val;
+            insert(root, val);
         }
-        cout << endl;
     }
 
     void postOrderTraversal(int index = 0) {
