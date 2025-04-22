@@ -1367,3 +1367,511 @@ int main() {
 
     return 0;
 }
+________________________________________________________________________________________________________________________________________________________
+Min-Heap
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class MinHeap {
+    vector<int> heap;
+
+    int parent(int i) { return (i - 1) / 2; }
+    int left(int i) { return 2 * i + 1; }
+    int right(int i) { return 2 * i + 2; }
+
+    void heapifyUp(int i) {
+        while (i > 0 && heap[i] < heap[parent(i)]) {
+            swap(heap[i], heap[parent(i)]);
+            i = parent(i);
+        }
+    }
+
+    void heapifyDown(int i) {
+        int size = heap.size();
+        int smallest = i;
+        int l = left(i), r = right(i);
+        if (l < size && heap[l] < heap[smallest]) smallest = l;
+        if (r < size && heap[r] < heap[smallest]) smallest = r;
+        if (smallest != i) {
+            swap(heap[i], heap[smallest]);
+            heapifyDown(smallest);
+        }
+    }
+
+public:
+    void insert(int val) {
+        heap.push_back(val);
+        heapifyUp(heap.size() - 1);
+        cout << "Inserted " << val << " into Min-Heap.\n";
+    }
+
+    void deleteRoot() {
+        if (heap.empty()) {
+            cout << "Heap is empty.\n";
+            return;
+        }
+        cout << "Deleted root: " << heap[0] << "\n";
+        heap[0] = heap.back();
+        heap.pop_back();
+        heapifyDown(0);
+    }
+
+    void display() {
+        cout << "Min-Heap: ";
+        for (int val : heap)
+            cout << val << " ";
+        cout << "\n";
+    }
+};
+
+int main() {
+    MinHeap h;
+    int choice, val;
+
+    do {
+        cout << "\n--- Min-Heap Menu ---\n";
+        cout << "1. Insert\n2. Delete Root\n3. Display\n0. Exit\nEnter choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 1: cout << "Enter value to insert: "; cin >> val; h.insert(val); break;
+            case 2: h.deleteRoot(); break;
+            case 3: h.display(); break;
+            case 0: cout << "Exiting...\n"; break;
+            default: cout << "Invalid choice!\n";
+        }
+    } while (choice != 0);
+
+    return 0;
+}
+_______________________________________________________________________________________________________________________
+Max-Heap
+#include <iostream>
+#include <vector>
+using namespace std;
+
+class MaxHeap {
+    vector<int> heap;
+
+    int parent(int i) { return (i - 1) / 2; }
+    int left(int i) { return 2 * i + 1; }
+    int right(int i) { return 2 * i + 2; }
+
+    void heapifyUp(int i) {
+        while (i > 0 && heap[i] > heap[parent(i)]) {
+            swap(heap[i], heap[parent(i)]);
+            i = parent(i);
+        }
+    }
+
+    void heapifyDown(int i) {
+        int size = heap.size();
+        int largest = i;
+        int l = left(i), r = right(i);
+        if (l < size && heap[l] > heap[largest]) largest = l;
+        if (r < size && heap[r] > heap[largest]) largest = r;
+        if (largest != i) {
+            swap(heap[i], heap[largest]);
+            heapifyDown(largest);
+        }
+    }
+
+public:
+    void insert(int val) {
+        heap.push_back(val);
+        heapifyUp(heap.size() - 1);
+        cout << "Inserted " << val << " into Max-Heap.\n";
+    }
+
+    void deleteRoot() {
+        if (heap.empty()) {
+            cout << "Heap is empty.\n";
+            return;
+        }
+        cout << "Deleted root: " << heap[0] << "\n";
+        heap[0] = heap.back();
+        heap.pop_back();
+        heapifyDown(0);
+    }
+
+    void display() {
+        cout << "Max-Heap: ";
+        for (int val : heap)
+            cout << val << " ";
+        cout << "\n";
+    }
+};
+
+int main() {
+    MaxHeap h;
+    int choice, val;
+
+    do {
+        cout << "\n--- Max-Heap Menu ---\n";
+        cout << "1. Insert\n2. Delete Root\n3. Display\n0. Exit\nEnter choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 1: cout << "Enter value to insert: "; cin >> val; h.insert(val); break;
+            case 2: h.deleteRoot(); break;
+            case 3: h.display(); break;
+            case 0: cout << "Exiting...\n"; break;
+            default: cout << "Invalid choice!\n";
+        }
+    } while (choice != 0);
+
+    return 0;
+}
+___________________________________________________________________________________________________________________________________________________
+Linked-list BST
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <queue>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node *left, *right;
+    Node(int val) : data(val), left(nullptr), right(nullptr) {}
+};
+
+class LinkedListBST {
+private:
+    Node* root;
+
+    void insert(Node* &node, int val) {
+        if (!node) node = new Node(val);
+        else if (val < node->data) insert(node->left, val);
+        else insert(node->right, val);
+    }
+
+public:
+    LinkedListBST() : root(nullptr) {}
+
+    void generate(int n) {
+        srand(time(0));
+        cout << "Generated values: ";
+        for (int i = 0; i < n; ++i) {
+            int val = rand() % 100 + 1;
+            cout << val << " ";
+            insert(root, val);
+        }
+        cout << endl;
+    }
+
+    void postOrder(Node* node) {
+        if (!node) return;
+        postOrder(node->left);
+        postOrder(node->right);
+        cout << node->data << " ";
+    }
+
+    void postOrderTraversal() {
+        cout << "Post-order Traversal: ";
+        postOrder(root);
+        cout << endl;
+    }
+
+    int heightNonRecursive() {
+        if (!root) return 0;
+        queue<Node*> q;
+        q.push(root);
+        int height = 0;
+        while (!q.empty()) {
+            int size = q.size();
+            while (size--) {
+                Node* temp = q.front(); q.pop();
+                if (temp->left) q.push(temp->left);
+                if (temp->right) q.push(temp->right);
+            }
+            height++;
+        }
+        return height;
+    }
+};
+
+int main() {
+    LinkedListBST bst;
+    int choice, n;
+
+    do {
+        cout << "\n--- Linked List BST Menu ---\n";
+        cout << "1. Generate Random BST\n2. Post-order Traversal\n3. Height (Non-Recursive)\n0. Exit\nEnter choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                cout << "How many nodes? ";
+                cin >> n;
+                bst.generate(n);
+                break;
+            case 2:
+                bst.postOrderTraversal();
+                break;
+            case 3:
+                cout << "Height of BST: " << bst.heightNonRecursive() << endl;
+                break;
+            case 0:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice!\n";
+        }
+    } while (choice != 0);
+
+    return 0;
+}
+______________________________________________________________________________________________________________________________________________
+Array BST
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <algorithm>
+using namespace std;
+
+const int MAX_SIZE = 1000;
+
+class ArrayBST {
+private:
+    int tree[MAX_SIZE];
+
+public:
+    ArrayBST() {
+        fill(tree, tree + MAX_SIZE, -1);
+    }
+
+    void insert(int val) {
+        int i = 0;
+        while (i < MAX_SIZE) {
+            if (tree[i] == -1) {
+                tree[i] = val;
+                return;
+            }
+            else if (val < tree[i])
+                i = 2 * i + 1;
+            else
+                i = 2 * i + 2;
+        }
+    }
+
+    void generate(int n) {
+        srand(time(0));
+        cout << "Generated values: ";
+        for (int i = 0; i < n; ++i) {
+            int val = rand() % 100 + 1;
+            cout << val << " ";
+            insert(val);
+        }
+        cout << endl;
+    }
+
+    void postOrderTraversal(int index = 0) {
+        if (index >= MAX_SIZE || tree[index] == -1) return;
+        postOrderTraversal(2 * index + 1);
+        postOrderTraversal(2 * index + 2);
+        cout << tree[index] << " ";
+    }
+
+    int heightNonRecursive() {
+        int maxHeight = 0;
+        for (int i = 0; i < MAX_SIZE; ++i) {
+            if (tree[i] != -1) {
+                int h = 0, index = i;
+                while (index != 0) {
+                    index = (index - 1) / 2;
+                    h++;
+                }
+                maxHeight = max(maxHeight, h);
+            }
+        }
+        return maxHeight + 1;
+    }
+};
+
+int main() {
+    ArrayBST bst;
+    int choice, n;
+
+    do {
+        cout << "\n--- Array BST Menu ---\n";
+        cout << "1. Generate Random BST\n2. Post-order Traversal\n3. Height (Non-Recursive)\n0. Exit\nEnter choice: ";
+        cin >> choice;
+        switch (choice) {
+            case 1:
+                cout << "How many nodes? ";
+                cin >> n;
+                bst.generate(n);
+                break;
+            case 2:
+                cout << "Post-order Traversal: ";
+                bst.postOrderTraversal();
+                cout << endl;
+                break;
+            case 3:
+                cout << "Height of BST: " << bst.heightNonRecursive() << endl;
+                break;
+            case 0:
+                cout << "Exiting...\n";
+                break;
+            default:
+                cout << "Invalid choice!\n";
+        }
+    } while (choice != 0);
+
+    return 0;
+}
+_____________________________________________________________________________________________________________________________________________________
+Kruskal
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+using namespace std;
+
+class CampusGraph {
+private:
+    int V;
+    vector<vector<int>> graph;
+    vector<string> departments;
+
+    struct Edge {
+        int u, v, weight;
+        bool operator<(Edge const& other) {
+            return weight < other.weight;
+        }
+    };
+
+    vector<Edge> edges;
+
+public:
+    CampusGraph(int vertices) {
+        V = vertices;
+        graph.resize(V, vector<int>(V, 0));
+        departments.resize(V);
+    }
+
+    void inputDepartments() {
+        cout << "Enter names of " << V << " departments: \n";
+        for (int i = 0; i < V; i++) {
+            cout << "Department " << i << ": ";
+            cin >> ws;
+            getline(cin, departments[i]);
+        }
+    }
+
+    void inputDistances() {
+        cout << "\nEnter distance between departments (in meters): \n";
+        for (int i = 0; i < V; i++) {
+            for (int j = i + 1; j < V; j++) {
+                cout << "Distance between " << departments[i] << " and " << departments[j] << ": ";
+                int dist;
+                cin >> dist;
+                graph[i][j] = graph[j][i] = dist;
+                edges.push_back({i, j, dist});
+            }
+        }
+    }
+
+    void displayAdjacencyMatrix() {
+        cout << "\nAdjacency Matrix:\n\t";
+        for (int i = 0; i < V; i++) cout << departments[i] << "\t";
+        cout << endl;
+        for (int i = 0; i < V; i++) {
+            cout << departments[i] << "\t";
+            for (int j = 0; j < V; j++) {
+                cout << graph[i][j] << "\t";
+            }
+            cout << endl;
+        }
+    }
+
+    void kruskalMST() {
+        sort(edges.begin(), edges.end());
+
+        vector<int> parent(V), rank(V, 0);
+        for (int i = 0; i < V; i++)
+            parent[i] = i;
+
+        int totalWeight = 0;
+        vector<Edge> result;
+
+        for (Edge& e : edges) {
+            int setU = findSet(e.u, parent);
+            int setV = findSet(e.v, parent);
+
+            if (setU != setV) {
+                result.push_back(e);
+                totalWeight += e.weight;
+                unionSets(setU, setV, parent, rank);
+            }
+        }
+
+        // Display result
+        cout << "\nMinimum Spanning Tree using Kruskal's Algorithm:\n";
+        cout << "Edge\t\tDistance (meters)\n";
+        for (auto& e : result) {
+            cout << departments[e.u] << " - " << departments[e.v] << "\t" << e.weight << " m\n";
+        }
+        cout << "Total Distance: " << totalWeight << " meters\n";
+    }
+
+    int findSet(int v, vector<int>& parent) {
+        if (v == parent[v])
+            return v;
+        return parent[v] = findSet(parent[v], parent);
+    }
+
+    void unionSets(int a, int b, vector<int>& parent, vector<int>& rank) {
+        a = findSet(a, parent);
+        b = findSet(b, parent);
+        if (a != b) {
+            if (rank[a] < rank[b])
+                parent[a] = b;
+            else if (rank[a] > rank[b])
+                parent[b] = a;
+            else {
+                parent[b] = a;
+                rank[a]++;
+            }
+        }
+    }
+};
+
+int main() {
+    int V, choice;
+
+    cout << "Enter number of departments: ";
+    cin >> V;
+
+    CampusGraph campus(V);
+    campus.inputDepartments();
+    campus.inputDistances();
+
+    cout << "\n--- College Campus Graph Menu ---\n";
+    cout << "1. Display Adjacency Matrix\n";
+    cout << "2. Find MST using Kruskal's Algorithm\n";
+    cout << "3. Exit\n";
+
+    do {
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            campus.displayAdjacencyMatrix();
+            break;
+        case 2:
+            campus.kruskalMST();
+            break;
+        case 3:
+            cout << "Exiting...\n";
+            break;
+        default:
+            cout << "Invalid choice!\n";
+        }
+    } while (choice != 3);
+
+    return 0;
+}
+
+
